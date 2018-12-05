@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
   <head>
+    <?php wp_head(); ?>
     <meta charset="<?php bloginfo('charset'); ?>"
     <meta name="viewport" content="width=device-width, initial-scale = 1">
-    <?php wp_head(); ?>
   </head>
 
   <body <?php body_class(); ?>>
@@ -19,7 +19,7 @@
               <li><a href="<?php echo site_url('/programs') ?>">Programs</a></li>
               <li><a href="<?php echo site_url('/events') ?>">Events</a></li>
               <li><a href="<?php echo site_url('/campuses') ?>">Campuses</a></li>
-              <li><a href="<?php echo site_url('/blog') ?>">Blog</a></li>
+              <li <?php if (get_post_type() == 'post') echo 'class="current-menu-item"'?>><a href="<?php echo site_url('/blog') ?>">Blog</a></li>
             </ul>
           </nav>
           <div class="site-header__util">
