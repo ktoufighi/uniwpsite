@@ -4,15 +4,33 @@ get_header(); ?>
 <div class="page-banner">
   <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg')?>);"></div>
   <div class="page-banner__content container container--narrow">
-    <h1 class="page-banner__title">All events</h1>
+    <h1 class="page-banner__title">Past Events</h1>
     <div class="page-banner__intro">
-      <p>See what is going on in our world.</p>
+      <p>A recap of all our past events.</p>
     </div>
   </div>
 </div>
 
 <div class="container container--narrow page-section">
   <?php
+
+    $today = date('Ymd');
+    $pastEvents = new WP_Query(array(
+      'paged' => get_query_var('paged', 1),
+      'post_type' => 'event',
+      'orderby' => 'meta_value_num',
+      'meta_key' => 'date',
+      'order' => 'ASC',
+      'meta_query' => array(
+        array(
+          'key' => 'date',
+          'compare' => '<',
+          'value' => $today,
+          'type' => 'numeric'
+        )
+      )
+    ));
+
     while (have_posts()) {
       the_post(); ?>
       <div class="event-summary">
@@ -30,12 +48,10 @@ get_header(); ?>
         </div>
       </div>
     <?php }
-    echo paginate_links();
+    echo paginate_links(array(
+      'total' => $pastEvents->max_num_pages,
+    ));
   ?>
-
-  <hr class="section-break">
-
-  To check our past event visit our <a href="<?php echo site_url('/past-events')?>">event archive page here</a>.
 </div>
 
 <?php get_footer();
