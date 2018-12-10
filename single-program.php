@@ -19,6 +19,93 @@ get_header();
       </div>
 
       <div class="generic-content"><?php the_content(); ?>
+
+      <?php
+      $relatedProfessors = new WP_Query(array(
+        // setting posts to -1 will return all post queries
+        'posts_per_page' => -1,
+        'post_type' => 'professor',
+        'orderby' => 'title',
+        'order' => 'ASC',
+        // ordering the date passed events should not show, we use array to give the custom query more than one parameter
+        'meta_query' => array(
+          array(
+            'key' => 'related_programs',
+            'compare' => 'LIKE',
+            'value' => '"' . get_the_ID() . '"'
+          )
+        )
+
+      ));
+
+      if ($relatedProfessors->have_posts()) {
+        echo '<hr class="section-break">';
+        echo '<h3> ' . get_the_title() . ' Professors</h3>';
+
+        while ($relatedProfessors->have_posts()) {
+          $relatedProfessors->the_post(); ?>
+          <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+        <?php }
+      }
+        // WHENEVER YOU NEED TO RUN MULTIPLE CUSTOM QUEIRES ON A SINGLE PAGE
+        // YOU WOULD NEED TO RESET THE GLOBAL PAGE ID BY RUNNING THIS FUNCTION
+        // IN BETWEEN THE QUERIES.
+        
+        wp_reset_postdata();
+
+          $today = date('Ymd');
+          $homepageEvents = new WP_Query(array(
+            // setting posts to -1 will return all post queries
+            'posts_per_page' => 2,
+            'post_type' => 'event',
+            'orderby' => 'meta_value_num',
+            'meta_key' => 'date',
+            'order' => 'ASC',
+            // ordering the date passed events should not show, we use array to give the custom query more than one parameter
+            'meta_query' => array(
+              array(
+                'key' => 'date',
+                'compare' => '>=',
+                'value' => $today,
+                'type' => 'numeric'
+              ),
+              array(
+                'key' => 'related_programs',
+                'compare' => 'LIKE',
+                'value' => '"' . get_the_ID() . '"'
+              )
+            )
+
+          ));
+
+          if ($homepageEvents->have_posts()) {
+            echo '<hr class="section-break">';
+            echo '<h3>Upcoming ' . get_the_title() . ' Events</h3>';
+
+            while ($homepageEvents->have_posts()) {
+              $homepageEvents->the_post(); ?>
+              <div class="event-summary">
+                <a class="event-summary__date t-center" href="#">
+                  <span class="event-summary__month"><?php
+                    $eventDate = new DateTime(the_field('date'));
+                    echo $eventDate->format('M');
+                  ?></span>
+                  <span class="event-summary__day"><?php echo $eventDate->format('d')
+                  ?></span>
+                </a>
+                <div class="event-summary__content">
+                  <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h5>
+                  <p><?php if (has_excerpt()) {
+                    echo get_the_excerpt();
+                  } else {
+                    echo wp_trim_words(get_the_content(), 18);
+                  } ?> <a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
+                </div>
+              </div>
+            <?php }
+          }
+        ?>
+
       </div>
     </div>
 
