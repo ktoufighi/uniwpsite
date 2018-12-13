@@ -44,13 +44,18 @@ get_header();
 
         while ($relatedProfessors->have_posts()) {
           $relatedProfessors->the_post(); ?>
-          <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+          <li class="professor-card__list-item">
+            <a class= "professor-card" href="<?php the_permalink(); ?>">
+              <img class="professor-card__image" src="<?php the_post_thumbnail_url('professorImage'); ?>">
+              <span class="professor-card__name"><?php the_title(); ?></span>
+            </a>
+          </li>
         <?php }
       }
         // WHENEVER YOU NEED TO RUN MULTIPLE CUSTOM QUEIRES ON A SINGLE PAGE
         // YOU WOULD NEED TO RESET THE GLOBAL PAGE ID BY RUNNING THIS FUNCTION
         // IN BETWEEN THE QUERIES.
-        
+
         wp_reset_postdata();
 
           $today = date('Ymd');
