@@ -2,9 +2,9 @@
 get_header();
   while (have_posts()) {
     the_post();
-    pageBanner();
+    pageBanner();?>
 
-    ?>
+    
 
     <div class="container container--narrow page-section">
 

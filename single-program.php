@@ -81,28 +81,27 @@ get_header();
             echo '<h3>Upcoming ' . get_the_title() . ' Events</h3>';
 
             while ($homepageEvents->have_posts()) {
-              $homepageEvents->the_post(); ?>
-              <div class="event-summary">
-                <a class="event-summary__date t-center" href="#">
-                  <span class="event-summary__month"><?php
-                    $eventDate = new DateTime(the_field('date'));
-                    echo $eventDate->format('M');
-                  ?></span>
-                  <span class="event-summary__day"><?php echo $eventDate->format('d')
-                  ?></span>
-                </a>
-                <div class="event-summary__content">
-                  <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h5>
-                  <p><?php if (has_excerpt()) {
-                    echo get_the_excerpt();
-                  } else {
-                    echo wp_trim_words(get_the_content(), 18);
-                  } ?> <a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
-                </div>
-              </div>
-            <?php }
+              $homepageEvents->the_post();
+              get_template_part('template-parts/content-event');
+             }
           }
-        ?>
+
+          // to give us a clean slate we should run this wp function
+          wp_reset_postdata();
+          // a new variable to to go back to the campus that offer the program on the single-program page
+          $relatedCampuses = get_field('related_campus');
+          echo '<hr class="section-break">';
+          if ($relatedCampuses) {
+            echo '<h3>' . get_the_title() . ' is Available at These Campuses</h3>';
+            echo '<ul class="min-list link-list">';
+            foreach($relatedCampuses as $campus) {
+              ?> <li><a href="<?php echo get_the_permalink($campus); ?>"><?php echo get_the_title($campus);  ?></a></li><?php
+            }
+            echo '</ul>';
+          }
+
+;        ?>
+
 
       </div>
     </div>
